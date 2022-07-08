@@ -84,8 +84,10 @@ RUN set -eux; \
 		ln -svT "$src" "/usr/local/bin/$dst"; \
 	done
 
-RUN pip install --upgrade pip pipenv && \
+RUN pip install --upgrade pip --trusted-host pypi.org && \
 	pip --version
+
+RUN pip install pipenv
 
 # Install Playwright
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
