@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM buildpack-deps:focal
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -17,10 +17,6 @@ RUN set -eux; \
 		libbluetooth-dev \
 		tk-dev \
 		uuid-dev \
-        wget \
-        ca-certificates \
-        gnupg \
-        build-essential \
 	; \
 	rm -rf /var/lib/apt/lists/*
 
@@ -84,7 +80,7 @@ RUN set -eux; \
 		ln -svT "$src" "/usr/local/bin/$dst"; \
 	done
 
-RUN pip install --upgrade pip --trusted-host pypi.org && \
+RUN pip install --upgrade pip --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org && \
 	pip --version
 
 RUN pip install pipenv
