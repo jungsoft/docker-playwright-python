@@ -28,7 +28,6 @@ ENV GPG_KEY E3FF2839C048B25C084DEBE9B26995E310250568
 ENV PYTHON_VERSION 3.8.13
 
 RUN set -eux; \
-	\
 	wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz"; \
 	wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc"; \
 	GNUPGHOME="$(mktemp -d)"; export GNUPGHOME; \
@@ -52,8 +51,7 @@ RUN set -eux; \
 		--with-ensurepip=install \
 	; \
 	nproc="$(nproc)"; \
-	make -j "$nproc" \
-	; \
+	make -j "$nproc"; \
 	make install; \
 	\
 # enable GDB to load debugging data: https://github.com/docker-library/python/pull/701
