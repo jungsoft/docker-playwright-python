@@ -32,4 +32,4 @@ jobs:
           install: true
       -
         name: Build and push with Buildx
-        run: docker build --platform linux/amd64,linux/arm64 . --tag jungsoft/python-ubuntu/3.8 --tag jungsoft/python-ubuntu/3.8:$(date +%s) --push
+        run: docker build --platform linux/amd64,linux/arm64 . --tag jungsoft/playwright-python/3.8 --tag jungsoft/playwright-python/3.8:$(date +%s) --push

@@ -84,7 +84,12 @@ RUN set -eux; \
 		ln -svT "$src" "/usr/local/bin/$dst"; \
 	done
 
-RUN pip install --upgrade pip && \
+RUN pip install --upgrade pip pipenv && \
 	pip --version
+
+# Install Playwright
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+RUN pip install playwright && \
+    playwright install --with-deps
 
 CMD ["python3"]
