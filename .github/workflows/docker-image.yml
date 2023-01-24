@@ -12,6 +12,11 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        PYTHON: [3.8.13, 3.8.16, 3.9.16, 3.10.9, 3.11.1, 3.12.0]
+        PLAYWRIGHT: [1.23.0, 1.29.1]
+
     steps:
       -
         name: Login to Docker Hub
@@ -32,4 +37,46 @@ jobs:
           install: true
       -
         name: Build and push with Buildx
-        run: docker build --platform linux/amd64,linux/arm64 . --tag jungsoft/playwright-python:3.8.13 --tag jungsoft/playwright-python:3.8 --tag jungsoft/playwright-python --push
+        run: docker build --platform linux/amd64,linux/arm64 . --tag jungsoft/playwright-python:${{ matrix.PYTHON }}-${{ matrix.PLAYWRIGHT }} --push
+        env:
+          PYTHON_VERSION: ${{ matrix.PYTHON }}
+          PLAYWRIGHT_VERSION: ${{ matrix.PLAYWRIGHT }}
+
+  retag_python:
+
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    strategy:
+
+      matrix:
+        python: [3.8.13, 3.8.16, 3.9.16, 3.10.9, 3.11.1, 3.12.0]
+
+    steps:
+
+      - name: Retag to latest playwright
+        uses: tinact/docker.image-retag@master
+        with:
+          image_name: jungsoft/playwright-python
+          image_old_tag: ${{ matrix.PYTHON }}-1.29.1
+          image_new_tag: ${{ matrix.PYTHON }}
+          registry_username: ${{ secrets.DOCKERHUB_USERNAME }}
+          registry_password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  retag_latest:
+
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Retag to latest
+        uses: tinact/docker.image-retag@master
+        with:
+          image_name: jungsoft/playwright-python
+          image_old_tag: 3.12.0-1.29.1
+          image_new_tag: latest
+          registry_username: ${{ secrets.DOCKERHUB_USERNAME }}
+          registry_password: ${{ secrets.DOCKERHUB_TOKEN }}

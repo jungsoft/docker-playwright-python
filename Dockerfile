@@ -1,6 +1,11 @@
 FROM buildpack-deps:focal
 
 ARG DEBIAN_FRONTEND=noninteractive
+ARG PYTHON_VERSION=3.8.13
+ARG PLAYWRIGHT_VERSION=1.29.1
+
+ENV PYTHON_VERSION=${PYTHON_VERSION}
+ENV PLAYWRIGHT_VERSION=${PLAYWRIGHT_VERSION}
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -21,7 +26,6 @@ RUN set -eux; \
 	rm -rf /var/lib/apt/lists/*
 
 ENV GPG_KEY E3FF2839C048B25C084DEBE9B26995E310250568
-ENV PYTHON_VERSION 3.8.13
 
 RUN set -eux; \
 	wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz"; \
@@ -87,7 +91,7 @@ RUN pip install pipenv
 
 # Install Playwright
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
-RUN pip install playwright && \
+RUN pip install playwright==$PLAYWRIGHT_VERSION && \
     playwright install --with-deps
 
 CMD ["python3"]
